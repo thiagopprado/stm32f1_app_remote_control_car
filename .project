@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>rc_car</name>
+	<name>remote_control_car</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -28,26 +28,4 @@
 		<nature>org.eclipse.cdt.managedbuilder.core.managedBuildNature</nature>
 		<nature>org.eclipse.cdt.managedbuilder.core.ScannerConfigNature</nature>
 	</natures>
-	<linkedResources>
-		<link>
-			<name>drivers</name>
-			<type>2</type>
-			<locationURI>$%7BPARENT-2-PROJECT_LOC%7D/external_libs/stm32f1_bm_drivers</locationURI>
-		</link>
-		<link>
-			<name>modules</name>
-			<type>2</type>
-			<locationURI>$%7BPARENT-2-PROJECT_LOC%7D/external_libs/stm32f1_libs</locationURI>
-		</link>
-		<link>
-			<name>CMSIS/Device</name>
-			<type>2</type>
-			<locationURI>$%7BPARENT-2-PROJECT_LOC%7D/external_libs/STM32CubeF1_lite/Drivers/CMSIS/Device/ST/STM32F1xx/Include</locationURI>
-		</link>
-		<link>
-			<name>CMSIS/Include</name>
-			<type>2</type>
-			<locationURI>$%7BPARENT-2-PROJECT_LOC%7D/external_libs/STM32CubeF1_lite/Drivers/CMSIS/Include</locationURI>
-		</link>
-	</linkedResources>
 </projectDescription>
