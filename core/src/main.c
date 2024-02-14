@@ -4,8 +4,6 @@
 #include "stm32f1xx.h"
 #include "core_cm3.h"
 
-#include "timer.h"
-
 #include "infrared.h"
 #include "buzzer.h"
 
@@ -22,9 +20,15 @@
 #define PWM_I3_PIN                  GPIO_PIN_0
 #define PWM_I4_PIN                  GPIO_PIN_1
 
+#define PWM_TIMER_INSTANCE          TIM3
+#define PWM_TIMER_CLOCK_ENABLE()    __HAL_RCC_TIM3_CLK_ENABLE()
+#define PWM_TIMER_PRESCALER         71
+#define PWM_TIMER_PERIOD            999
+
 /** Types --------------------------------------------------------- */
 
 /** Variables ----------------------------------------------------- */
+static TIM_HandleTypeDef timer_handle = { 0 };
 
 /** Prototypes ---------------------------------------------------- */
 static void clock_config(void);
@@ -80,18 +84,27 @@ int main(void) {
     gpio_init.Pin = PWM_I3_PIN | PWM_I4_PIN;
     HAL_GPIO_Init(PWM_MOTOR_2_PORT, &gpio_init);
 
-    timer_setup(TIMER_3, 71, 999);
-    timer_pwm_setup(TIMER_3, TIMER_CH_1);
-    timer_pwm_setup(TIMER_3, TIMER_CH_2);
-    timer_pwm_setup(TIMER_3, TIMER_CH_3);
-    timer_pwm_setup(TIMER_3, TIMER_CH_4);
+    PWM_TIMER_CLOCK_ENABLE();
 
-    timer_attach_callback(TIMER_3, NULL);
+    timer_handle.Instance = PWM_TIMER_INSTANCE;
+    timer_handle.Init.Prescaler = PWM_TIMER_PRESCALER;
+    timer_handle.Init.Period = PWM_TIMER_PERIOD;
+    timer_handle.Init.CounterMode = TIM_COUNTERMODE_UP;
+    timer_handle.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+    HAL_TIM_PWM_Init(&timer_handle);
 
-    timer_pwm_set_duty(TIMER_3, TIMER_CH_1, 0);
-    timer_pwm_set_duty(TIMER_3, TIMER_CH_2, 0);
-    timer_pwm_set_duty(TIMER_3, TIMER_CH_3, 0);
-    timer_pwm_set_duty(TIMER_3, TIMER_CH_4, 0);
+    TIM_OC_InitTypeDef pwm_config = { 0 };
+
+    pwm_config.OCMode = TIM_OCMODE_PWM1;
+    HAL_TIM_PWM_ConfigChannel(&timer_handle, &pwm_config, TIM_CHANNEL_1);
+    HAL_TIM_PWM_ConfigChannel(&timer_handle, &pwm_config, TIM_CHANNEL_2);
+    HAL_TIM_PWM_ConfigChannel(&timer_handle, &pwm_config, TIM_CHANNEL_3);
+    HAL_TIM_PWM_ConfigChannel(&timer_handle, &pwm_config, TIM_CHANNEL_4);
+
+    HAL_TIM_PWM_Start(&timer_handle, TIM_CHANNEL_1);
+    HAL_TIM_PWM_Start(&timer_handle, TIM_CHANNEL_2);
+    HAL_TIM_PWM_Start(&timer_handle, TIM_CHANNEL_3);
+    HAL_TIM_PWM_Start(&timer_handle, TIM_CHANNEL_4);
 
     while (true) {
         if (HAL_GetTick() - timeshot > 200) {
@@ -101,42 +114,51 @@ int main(void) {
 
             switch (key_pressed) {
                 case INFRARED_KEY_UP: {
-                    timer_pwm_set_duty(TIMER_3, TIMER_CH_1, 0);
-                    timer_pwm_set_duty(TIMER_3, TIMER_CH_2, 999);
+                    pwm_config.Pulse = 0;
+                    HAL_TIM_PWM_ConfigChannel(&timer_handle, &pwm_config, TIM_CHANNEL_1);
+                    HAL_TIM_PWM_ConfigChannel(&timer_handle, &pwm_config, TIM_CHANNEL_4);
 
-                    timer_pwm_set_duty(TIMER_3, TIMER_CH_3, 999);
-                    timer_pwm_set_duty(TIMER_3, TIMER_CH_4, 0);
+                    pwm_config.Pulse = 999;
+                    HAL_TIM_PWM_ConfigChannel(&timer_handle, &pwm_config, TIM_CHANNEL_2);
+                    HAL_TIM_PWM_ConfigChannel(&timer_handle, &pwm_config, TIM_CHANNEL_3);
                     break;
                 }
                 case INFRARED_KEY_DOWN: {
-                    timer_pwm_set_duty(TIMER_3, TIMER_CH_1, 999);
-                    timer_pwm_set_duty(TIMER_3, TIMER_CH_2, 0);
+                    pwm_config.Pulse = 0;
+                    HAL_TIM_PWM_ConfigChannel(&timer_handle, &pwm_config, TIM_CHANNEL_2);
+                    HAL_TIM_PWM_ConfigChannel(&timer_handle, &pwm_config, TIM_CHANNEL_3);
 
-                    timer_pwm_set_duty(TIMER_3, TIMER_CH_3, 0);
-                    timer_pwm_set_duty(TIMER_3, TIMER_CH_4, 999);
+                    pwm_config.Pulse = 999;
+                    HAL_TIM_PWM_ConfigChannel(&timer_handle, &pwm_config, TIM_CHANNEL_1);
+                    HAL_TIM_PWM_ConfigChannel(&timer_handle, &pwm_config, TIM_CHANNEL_4);
                     break;
                 }
                 case INFRARED_KEY_LEFT: {
-                    timer_pwm_set_duty(TIMER_3, TIMER_CH_1, 0);
-                    timer_pwm_set_duty(TIMER_3, TIMER_CH_2, 0);
+                    pwm_config.Pulse = 0;
+                    HAL_TIM_PWM_ConfigChannel(&timer_handle, &pwm_config, TIM_CHANNEL_1);
+                    HAL_TIM_PWM_ConfigChannel(&timer_handle, &pwm_config, TIM_CHANNEL_2);
+                    HAL_TIM_PWM_ConfigChannel(&timer_handle, &pwm_config, TIM_CHANNEL_4);
 
-                    timer_pwm_set_duty(TIMER_3, TIMER_CH_3, 999);
-                    timer_pwm_set_duty(TIMER_3, TIMER_CH_4, 0);
+                    pwm_config.Pulse = 999;
+                    HAL_TIM_PWM_ConfigChannel(&timer_handle, &pwm_config, TIM_CHANNEL_3);
                     break;
                 }
                 case INFRARED_KEY_RIGHT: {
-                    timer_pwm_set_duty(TIMER_3, TIMER_CH_1, 0);
-                    timer_pwm_set_duty(TIMER_3, TIMER_CH_2, 999);
+                    pwm_config.Pulse = 0;
+                    HAL_TIM_PWM_ConfigChannel(&timer_handle, &pwm_config, TIM_CHANNEL_1);
+                    HAL_TIM_PWM_ConfigChannel(&timer_handle, &pwm_config, TIM_CHANNEL_3);
+                    HAL_TIM_PWM_ConfigChannel(&timer_handle, &pwm_config, TIM_CHANNEL_4);
 
-                    timer_pwm_set_duty(TIMER_3, TIMER_CH_3, 0);
-                    timer_pwm_set_duty(TIMER_3, TIMER_CH_4, 0);
+                    pwm_config.Pulse = 999;
+                    HAL_TIM_PWM_ConfigChannel(&timer_handle, &pwm_config, TIM_CHANNEL_2);
                     break;
                 }
                 default: {
-                    timer_pwm_set_duty(TIMER_3, TIMER_CH_1, 0);
-                    timer_pwm_set_duty(TIMER_3, TIMER_CH_2, 0);
-                    timer_pwm_set_duty(TIMER_3, TIMER_CH_3, 0);
-                    timer_pwm_set_duty(TIMER_3, TIMER_CH_4, 0);
+                    pwm_config.Pulse = 0;
+                    HAL_TIM_PWM_ConfigChannel(&timer_handle, &pwm_config, TIM_CHANNEL_1);
+                    HAL_TIM_PWM_ConfigChannel(&timer_handle, &pwm_config, TIM_CHANNEL_2);
+                    HAL_TIM_PWM_ConfigChannel(&timer_handle, &pwm_config, TIM_CHANNEL_3);
+                    HAL_TIM_PWM_ConfigChannel(&timer_handle, &pwm_config, TIM_CHANNEL_4);
                     break;
                 }
             }
