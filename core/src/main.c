@@ -10,6 +10,8 @@
 #include "infrared.h"
 #include "buzzer.h"
 
+#include "stm32f1xx_hal.h"
+
 /** Definitions --------------------------------------------------- */
 
 /** Types --------------------------------------------------------- */
@@ -34,6 +36,7 @@ static void timer_callback(void) {
 int main(void) {
     uint32_t timeshot = 0;
 
+    HAL_Init();
     rcc_clock_init();
 
     infrared_setup();
