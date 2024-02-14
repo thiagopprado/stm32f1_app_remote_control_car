@@ -16,11 +16,9 @@
 /** Types --------------------------------------------------------- */
 
 /** Variables ----------------------------------------------------- */
-static volatile uint32_t timer_counter = 0;
 
 /** Prototypes ---------------------------------------------------- */
 static void clock_config(void);
-static void timer_callback(void);
 
 /** Internal functions -------------------------------------------- */
 /**
@@ -50,15 +48,6 @@ static void clock_config(void)
     HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2);
 }
 
-/**
- * @brief Timer callback.
- * 
- * Executed every 1ms.
- */
-static void timer_callback(void) {
-    timer_counter++;
-}
-
 /** Public functions ---------------------------------------------- */
 int main(void) {
     uint32_t timeshot = 0;
@@ -80,7 +69,7 @@ int main(void) {
     timer_pwm_setup(TIMER_3, TIMER_CH_3);
     timer_pwm_setup(TIMER_3, TIMER_CH_4);
 
-    timer_attach_callback(TIMER_3, timer_callback);
+    timer_attach_callback(TIMER_3, NULL);
 
     timer_pwm_set_duty(TIMER_3, TIMER_CH_1, 0);
     timer_pwm_set_duty(TIMER_3, TIMER_CH_2, 0);
@@ -88,10 +77,8 @@ int main(void) {
     timer_pwm_set_duty(TIMER_3, TIMER_CH_4, 0);
 
     while (true) {
-        uint32_t time_diff = timer_counter - timeshot;
-
-        if (time_diff > 200) {
-            timeshot = timer_counter;
+        if (HAL_GetTick() - timeshot > 200) {
+            timeshot = HAL_GetTick();
 
             ir_key_id_t key_pressed = infrared_decode();
 
