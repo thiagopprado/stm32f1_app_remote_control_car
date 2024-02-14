@@ -12,6 +12,15 @@
 #include "stm32f1xx_hal.h"
 
 /** Definitions --------------------------------------------------- */
+#define GPIO_MOTOR_1_CLOCK_ENABLE() __HAL_RCC_GPIOA_CLK_ENABLE()
+#define PWM_MOTOR_1_PORT            GPIOA
+#define PWM_I1_PIN                  GPIO_PIN_6
+#define PWM_I2_PIN                  GPIO_PIN_7
+
+#define GPIO_MOTOR_2_CLOCK_ENABLE() __HAL_RCC_GPIOB_CLK_ENABLE()
+#define PWM_MOTOR_2_PORT            GPIOB
+#define PWM_I3_PIN                  GPIO_PIN_0
+#define PWM_I4_PIN                  GPIO_PIN_1
 
 /** Types --------------------------------------------------------- */
 
@@ -58,10 +67,18 @@ int main(void) {
     infrared_setup();
     buzzer_setup();
 
-    gpio_setup(GPIO_PORTA, 6, GPIO_MODE_OUTPUT_50, GPIO_CFG_OUT_AF_PUSH_PULL);
-    gpio_setup(GPIO_PORTA, 7, GPIO_MODE_OUTPUT_50, GPIO_CFG_OUT_AF_PUSH_PULL);
-    gpio_setup(GPIO_PORTB, 0, GPIO_MODE_OUTPUT_50, GPIO_CFG_OUT_AF_PUSH_PULL);
-    gpio_setup(GPIO_PORTB, 1, GPIO_MODE_OUTPUT_50, GPIO_CFG_OUT_AF_PUSH_PULL);
+    GPIO_MOTOR_1_CLOCK_ENABLE();
+    GPIO_MOTOR_2_CLOCK_ENABLE();
+
+    GPIO_InitTypeDef gpio_init;
+    gpio_init.Pin = PWM_I1_PIN | PWM_I2_PIN;
+    gpio_init.Mode = GPIO_MODE_AF_PP;
+    gpio_init.Pull = GPIO_NOPULL;
+    gpio_init.Speed = GPIO_SPEED_FREQ_HIGH;
+    HAL_GPIO_Init(PWM_MOTOR_1_PORT, &gpio_init);
+
+    gpio_init.Pin = PWM_I3_PIN | PWM_I4_PIN;
+    HAL_GPIO_Init(PWM_MOTOR_2_PORT, &gpio_init);
 
     timer_setup(TIMER_3, 71, 999);
     timer_pwm_setup(TIMER_3, TIMER_CH_1);
