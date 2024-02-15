@@ -1,9 +1,6 @@
 [submodule "external_libs/STM32CubeF1_lite"]
 	path = external_libs/STM32CubeF1_lite
 	url = git@github.com:thiagopprado/STM32CubeF1_lite.git
-[submodule "external_libs/stm32f1_bm_drivers"]
-	path = external_libs/stm32f1_bm_drivers
-	url = git@github.com:thiagopprado/stm32f1_bm_drivers.git
 [submodule "external_libs/stm32f1_libs"]
 	path = external_libs/stm32f1_libs
 	url = git@github.com:thiagopprado/stm32f1_libs.git
