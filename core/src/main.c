@@ -24,6 +24,7 @@
 #define PWM_TIMER_CLOCK_ENABLE()    __HAL_RCC_TIM3_CLK_ENABLE()
 #define PWM_TIMER_PRESCALER         71
 #define PWM_TIMER_PERIOD            999
+#define PWM_TIMER_DUTY              700
 
 /** Types --------------------------------------------------------- */
 
@@ -115,28 +116,28 @@ int main(void) {
             switch (key_pressed) {
                 case INFRARED_KEY_UP: {
                     __HAL_TIM_SET_COMPARE(&timer_handle, TIM_CHANNEL_1, 0);
-                    __HAL_TIM_SET_COMPARE(&timer_handle, TIM_CHANNEL_2, 999);
-                    __HAL_TIM_SET_COMPARE(&timer_handle, TIM_CHANNEL_3, 999);
+                    __HAL_TIM_SET_COMPARE(&timer_handle, TIM_CHANNEL_2, PWM_TIMER_DUTY);
+                    __HAL_TIM_SET_COMPARE(&timer_handle, TIM_CHANNEL_3, PWM_TIMER_DUTY);
                     __HAL_TIM_SET_COMPARE(&timer_handle, TIM_CHANNEL_4, 0);
                     break;
                 }
                 case INFRARED_KEY_DOWN: {
-                    __HAL_TIM_SET_COMPARE(&timer_handle, TIM_CHANNEL_1, 999);
+                    __HAL_TIM_SET_COMPARE(&timer_handle, TIM_CHANNEL_1, PWM_TIMER_DUTY);
                     __HAL_TIM_SET_COMPARE(&timer_handle, TIM_CHANNEL_2, 0);
                     __HAL_TIM_SET_COMPARE(&timer_handle, TIM_CHANNEL_3, 0);
-                    __HAL_TIM_SET_COMPARE(&timer_handle, TIM_CHANNEL_4, 999);
+                    __HAL_TIM_SET_COMPARE(&timer_handle, TIM_CHANNEL_4, PWM_TIMER_DUTY);
                     break;
                 }
                 case INFRARED_KEY_LEFT: {
                     __HAL_TIM_SET_COMPARE(&timer_handle, TIM_CHANNEL_1, 0);
                     __HAL_TIM_SET_COMPARE(&timer_handle, TIM_CHANNEL_2, 0);
-                    __HAL_TIM_SET_COMPARE(&timer_handle, TIM_CHANNEL_3, 999);
+                    __HAL_TIM_SET_COMPARE(&timer_handle, TIM_CHANNEL_3, PWM_TIMER_DUTY);
                     __HAL_TIM_SET_COMPARE(&timer_handle, TIM_CHANNEL_4, 0);
                     break;
                 }
                 case INFRARED_KEY_RIGHT: {
                     __HAL_TIM_SET_COMPARE(&timer_handle, TIM_CHANNEL_1, 0);
-                    __HAL_TIM_SET_COMPARE(&timer_handle, TIM_CHANNEL_2, 999);
+                    __HAL_TIM_SET_COMPARE(&timer_handle, TIM_CHANNEL_2, PWM_TIMER_DUTY);
                     __HAL_TIM_SET_COMPARE(&timer_handle, TIM_CHANNEL_3, 0);
                     __HAL_TIM_SET_COMPARE(&timer_handle, TIM_CHANNEL_4, 0);
                     break;
