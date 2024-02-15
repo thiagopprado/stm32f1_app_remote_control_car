@@ -114,51 +114,38 @@ int main(void) {
 
             switch (key_pressed) {
                 case INFRARED_KEY_UP: {
-                    pwm_config.Pulse = 0;
-                    HAL_TIM_PWM_ConfigChannel(&timer_handle, &pwm_config, TIM_CHANNEL_1);
-                    HAL_TIM_PWM_ConfigChannel(&timer_handle, &pwm_config, TIM_CHANNEL_4);
-
-                    pwm_config.Pulse = 999;
-                    HAL_TIM_PWM_ConfigChannel(&timer_handle, &pwm_config, TIM_CHANNEL_2);
-                    HAL_TIM_PWM_ConfigChannel(&timer_handle, &pwm_config, TIM_CHANNEL_3);
+                    __HAL_TIM_SET_COMPARE(&timer_handle, TIM_CHANNEL_1, 0);
+                    __HAL_TIM_SET_COMPARE(&timer_handle, TIM_CHANNEL_2, 999);
+                    __HAL_TIM_SET_COMPARE(&timer_handle, TIM_CHANNEL_3, 999);
+                    __HAL_TIM_SET_COMPARE(&timer_handle, TIM_CHANNEL_4, 0);
                     break;
                 }
                 case INFRARED_KEY_DOWN: {
-                    pwm_config.Pulse = 0;
-                    HAL_TIM_PWM_ConfigChannel(&timer_handle, &pwm_config, TIM_CHANNEL_2);
-                    HAL_TIM_PWM_ConfigChannel(&timer_handle, &pwm_config, TIM_CHANNEL_3);
-
-                    pwm_config.Pulse = 999;
-                    HAL_TIM_PWM_ConfigChannel(&timer_handle, &pwm_config, TIM_CHANNEL_1);
-                    HAL_TIM_PWM_ConfigChannel(&timer_handle, &pwm_config, TIM_CHANNEL_4);
+                    __HAL_TIM_SET_COMPARE(&timer_handle, TIM_CHANNEL_1, 999);
+                    __HAL_TIM_SET_COMPARE(&timer_handle, TIM_CHANNEL_2, 0);
+                    __HAL_TIM_SET_COMPARE(&timer_handle, TIM_CHANNEL_3, 0);
+                    __HAL_TIM_SET_COMPARE(&timer_handle, TIM_CHANNEL_4, 999);
                     break;
                 }
                 case INFRARED_KEY_LEFT: {
-                    pwm_config.Pulse = 0;
-                    HAL_TIM_PWM_ConfigChannel(&timer_handle, &pwm_config, TIM_CHANNEL_1);
-                    HAL_TIM_PWM_ConfigChannel(&timer_handle, &pwm_config, TIM_CHANNEL_2);
-                    HAL_TIM_PWM_ConfigChannel(&timer_handle, &pwm_config, TIM_CHANNEL_4);
-
-                    pwm_config.Pulse = 999;
-                    HAL_TIM_PWM_ConfigChannel(&timer_handle, &pwm_config, TIM_CHANNEL_3);
+                    __HAL_TIM_SET_COMPARE(&timer_handle, TIM_CHANNEL_1, 0);
+                    __HAL_TIM_SET_COMPARE(&timer_handle, TIM_CHANNEL_2, 0);
+                    __HAL_TIM_SET_COMPARE(&timer_handle, TIM_CHANNEL_3, 999);
+                    __HAL_TIM_SET_COMPARE(&timer_handle, TIM_CHANNEL_4, 0);
                     break;
                 }
                 case INFRARED_KEY_RIGHT: {
-                    pwm_config.Pulse = 0;
-                    HAL_TIM_PWM_ConfigChannel(&timer_handle, &pwm_config, TIM_CHANNEL_1);
-                    HAL_TIM_PWM_ConfigChannel(&timer_handle, &pwm_config, TIM_CHANNEL_3);
-                    HAL_TIM_PWM_ConfigChannel(&timer_handle, &pwm_config, TIM_CHANNEL_4);
-
-                    pwm_config.Pulse = 999;
-                    HAL_TIM_PWM_ConfigChannel(&timer_handle, &pwm_config, TIM_CHANNEL_2);
+                    __HAL_TIM_SET_COMPARE(&timer_handle, TIM_CHANNEL_1, 0);
+                    __HAL_TIM_SET_COMPARE(&timer_handle, TIM_CHANNEL_2, 999);
+                    __HAL_TIM_SET_COMPARE(&timer_handle, TIM_CHANNEL_3, 0);
+                    __HAL_TIM_SET_COMPARE(&timer_handle, TIM_CHANNEL_4, 0);
                     break;
                 }
                 default: {
-                    pwm_config.Pulse = 0;
-                    HAL_TIM_PWM_ConfigChannel(&timer_handle, &pwm_config, TIM_CHANNEL_1);
-                    HAL_TIM_PWM_ConfigChannel(&timer_handle, &pwm_config, TIM_CHANNEL_2);
-                    HAL_TIM_PWM_ConfigChannel(&timer_handle, &pwm_config, TIM_CHANNEL_3);
-                    HAL_TIM_PWM_ConfigChannel(&timer_handle, &pwm_config, TIM_CHANNEL_4);
+                    __HAL_TIM_SET_COMPARE(&timer_handle, TIM_CHANNEL_1, 0);
+                    __HAL_TIM_SET_COMPARE(&timer_handle, TIM_CHANNEL_2, 0);
+                    __HAL_TIM_SET_COMPARE(&timer_handle, TIM_CHANNEL_3, 0);
+                    __HAL_TIM_SET_COMPARE(&timer_handle, TIM_CHANNEL_4, 0);
                     break;
                 }
             }
